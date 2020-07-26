@@ -1,40 +1,15 @@
+const prompt = require('prompt-sync')({sigint: true});
 // //I'm to take in prompt from users on two activities that were performed that day 
 // //Each activity has a weight that refers to how much it affects the werewolf turning 
 // //after taking all 14 inputs, I'll compute the total and give an output 
 let Wolf = function(){
     //private static attribute
      const activityMap = [
-        {'eating': 3.33},
-        {'dancing': 3.33},
-        {'walking': 3.33},
-        {'pizza': 3.33},
-        {'shawarma': 3.33},
-        {'rice': 3.33},
-        {'beans': 3.33},
-        {'honeybeans': 3.33},
-        {'strawberry': 3.33},
-        {'mango': 3.33},
-        {'Watermellon': 3.33},
-        {'cucumber': 3.33},
-        {'pineapple': 3.33},
-        {'apple': 3.33},
-        {'eba': 3.33},
-        {'cocktail': 3.33},
-        {'chicken': 3.33},
-        {'fish': 3.33},
-        {'stew': 3.33},
-        {'akidi': 3.33},
-        {'banga': 3.33},
-        {'ewo': 3.33},
-        {'egusi': 3.33},
-        {'afang': 3.33},
-        {'vegetable': 3.33},
-        {'leaf': 3.33},
-        {'pepper': 3.33},
-        {'tomatoe': 3.33},
-        {'sauce': 3.33},
-        {'sardin': 3.33},
-
+        {'eating': 3},
+        {'hunting': 3},
+        {'moonlight': 7},
+        {'barking': 4},
+        {'sleeping': 5},
     ]
 
     let dailyActivity = []
@@ -45,7 +20,10 @@ let Wolf = function(){
 
         //instance methods 
         this.showActivityMap = ()=>{
-            return activityMap
+            const result =  activityMap.map(act => {
+                return Object.keys(act)
+            })
+            return result
         }
 
         this.addActivity = (activity)=>{
@@ -75,15 +53,15 @@ let Wolf = function(){
                     }
                 })
             })
-            return totalScore
+            return Math.ceil(totalScore)
         }
         
         this.isWereWolf = () => {
             const totalScore = this.totalActivityScore();
-            if(totalScore < 50){
-                return ("Not yet a were wolf");
+            if(totalScore < 70){
+                return ("didn't turn to a  wolf :(");
             }else{
-                return ("Turned to a wolf")
+                return ("turned to a wolf :)")
             }
         }
     }
@@ -91,13 +69,22 @@ let Wolf = function(){
     
 }
 let newWolf = new Wolf()
-const waar = new newWolf('kelvin');
-try{
-    
-console.log(waar.addActivity('sauce'))
-console.log(waar.addActivity('sardin'))
-console.log(waar.showCurrentActivity())
-console.log(waar.totalActivityScore())
-}catch(err){
-    console.log('::Error: ', err.message)
+const wolfName = prompt("Please enter your wolf's identifier: ");
+const yourWolf = new newWolf(`${wolfName}`)
+prompt(`::The next series of prompts you'll receive will require you enter at least one action your wolf performed on that day. Follow through till the 14th day, cheers:) Here is a list of possible actions your wolf can perform: ${yourWolf.showActivityMap()}. Press Enter to continue the program`)
+function get14DaysAction(){
+    for(let i = 1; i < 15; i ++){
+        try{
+            const wolfAction = prompt(`What did ${wolfName} do on day ${i}? `)
+            yourWolf.addActivity(wolfAction);
+        }catch(err){
+            console.log(`::An error occurred: ${err.message}`)
+            const wolfAction = prompt(`What did ${wolfName} do on day ${i}? `)
+            yourWolf.addActivity(wolfAction);
+        }
+    }
 }
+get14DaysAction()
+prompt(`::We are all itching to know if ${wolfName} turned, let's find out in a second `)
+console.log(`${wolfName} ${yourWolf.isWereWolf()}`)
+console.log(`${wolfName}'s score was ${yourWolf.totalActivityScore()}`)
